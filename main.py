@@ -16,4 +16,4 @@ if not CHANNEL_USERNAME:
 
 # Create Twitch client and connect to chat
 twitch_client = TwitchClient(client_id=CLIENT_ID, access_token=ACCESS_TOKEN)
-twitch_client.listen_to_channel_messages(CHANNEL_USERNAME, "heaverage")
+twitch_client.listen_to_channel_messages(CHANNEL_USERNAME, YOUR_CHANNEL_USERNAME)

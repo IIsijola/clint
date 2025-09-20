@@ -34,6 +34,105 @@ class TwitchClient:
         })
 
     # -----------------------
+    # CLIPS
+    # -----------------------
+    def create_clip(self, username: str, has_delay: Optional[bool] = None) -> Dict[str, Any]:
+        """
+        Create a clip for the given broadcaster.
+
+        Args:
+            username (str): Twitch username
+            has_delay (bool, optional): Include stream delay. True/False/None (default)
+
+        Returns:
+            Dict[str, Any]: Response containing:
+                - id: The clip ID for verification
+                - edit_url: URL to edit the clip once it's processed
+
+        Requirements: User Access Token with 'clips:edit' scope
+        """
+        broadcaster_id = self.get_user_id(username)
+        params = {"broadcaster_id": broadcaster_id}
+        if has_delay is not None:
+            params["has_delay"] = str(has_delay).lower()
+
+        r = self.session.post(f"{self.base_url}/clips", params=params, timeout=20)
+        self._raise_for_status(r)
+        return r.json()
+
+    def get_clips(self,
+                  username: str,
+                  game_id: Optional[str] = None,
+                  clip_ids: Optional[Iterable[str]] = None,
+                  started_at: Optional[str] = None,
+                  ended_at: Optional[str] = None,
+                  first: Optional[int] = None,
+                  after: Optional[str] = None,
+                  before: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Fetch clips with filtering and pagination options.
+
+        Args:
+            username (str): Filter by streamer's username
+            game_id (str, optional): Filter by game ID
+            clip_ids (Iterable[str], optional): Get specific clips by IDs (max 100)
+            started_at (str, optional): Start date (ISO-8601 format)
+            ended_at (str, optional): End date (ISO-8601 format)
+            first (int, optional): Number of clips (1-100, default: 20)
+            after (str, optional): Pagination cursor for next page
+            before (str, optional): Pagination cursor for previous page
+
+        Returns:
+            Dict[str, Any]: Response containing:
+                - data: List of clip objects
+                - pagination: Cursor info for next/previous pages
+
+        Note: Filter by broadcaster_id OR game_id OR clip_ids (not combinations)
+        """
+        broadcaster_id = self.get_user_id(username)
+        params: Dict[str, Any] = {}
+        if clip_ids:
+            for cid in clip_ids:
+                params.setdefault("id", []).append(cid)
+        if broadcaster_id:
+            params["broadcaster_id"] = broadcaster_id
+        if game_id:
+            params["game_id"] = game_id
+        if started_at:
+            params["started_at"] = started_at
+        if ended_at:
+            params["ended_at"] = ended_at
+        if first:
+            params["first"] = first
+        if after:
+            params["after"] = after
+        if before:
+            params["before"] = before
+
+        r = self.session.get(f"{self.base_url}/clips", params=params, timeout=20)
+        self._raise_for_status(r)
+        return r.json()
+
+    def get_user_id(self, username: str) -> Optional[str]:
+        """
+        Get Twitch user ID from username.
+
+        Args:
+            username (str): Twitch username (login name)
+
+        Returns:
+            Optional[str]: User ID if found, None if not found
+        """
+        params = {"login": username}
+        r = self.session.get(f"{self.base_url}/users", params=params, timeout=10)
+        self._raise_for_status(r)
+        
+        data = r.json()
+        if data.get("data") and len(data["data"]) > 0:
+            return data["data"][0]["id"]
+        return None
+
+    # -----------------------
     # IRC (CHAT) — READ MESSAGES
     # -----------------------
     def listen_to_channel_messages(
@@ -46,6 +145,18 @@ class TwitchClient:
     ) -> None:
         """
         Connects to Twitch IRC and prints formatted chat messages.
+
+        Args:
+            channel_login (str): Channel username (without '#')
+            bot_login (str): Username of account that owns the access token
+            request_tags_and_membership (bool, optional): Enable badges/colors (default: True)
+            ssl_port (int, optional): IRC SSL port (default: 6697)
+            host (str, optional): IRC server hostname (default: "irc.chat.twitch.tv")
+
+        Output Format:
+            Time: HH:MM:SS
+            Username: display_name
+            Message: chat_message
         """
         self._listen_to_twitch_chat(
             channel_login=channel_login,

@@ -15,11 +15,6 @@
 
 ## Examples
 
-### YouTube Transcript Extraction
-```bash
-python3 -m src.examples.extract_transcript_text_example
-```
-
 ### Twitch Chat Listening
 ```bash
 python3 -m src.examples.twitch_chat_listener
@@ -28,6 +23,11 @@ python3 -m src.examples.twitch_chat_listener
 ### Ollama Chat Testing
 ```bash
 python3 -m src.examples.ollama_chat_example
+```
+
+### YouTube Transcript with Segments
+```bash
+python3 -m src.examples.youtube_segments_example
 ```
 
 ## Project Structure

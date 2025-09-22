@@ -31,10 +31,5 @@ clint/
 ├── src/
 │   ├── services/          # API clients (Twitch, YouTube)
 │   └── examples/          # Example scripts
-│       ├── extract_transcript_text_example.py
-│       └── twitch_chat_listener.py
-├── main.py               # Main application
-├── examples.py           # Legacy Twitch examples
-└── run_youtube_example.py # YouTube launcher
 ```
 

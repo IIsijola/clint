@@ -12,3 +12,24 @@
    - Click `Authorize`
    - Solve Captcha
    - Copy the two variables: `TWITCH_CLIENT_ID` and `TWITCH_ACCESS_TOKEN` to the `.env` file
+
+## Examples
+
+### YouTube Transcript Extraction
+```bash
+python3 -m src.examples.extract_transcript_text_example
+```
+
+### Twitch Chat Listening
+```bash
+python3 -m src.examples.twitch_chat_listener
+```
+
+## Project Structure
+```
+clint/
+├── src/
+│   ├── services/          # API clients (Twitch, YouTube)
+│   └── examples/          # Example scripts
+```
+

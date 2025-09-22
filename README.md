@@ -25,6 +25,11 @@ python3 -m src.examples.extract_transcript_text_example
 python3 -m src.examples.twitch_chat_listener
 ```
 
+### Ollama Chat Testing
+```bash
+python3 -m src.examples.ollama_chat_example
+```
+
 ## Project Structure
 ```
 clint/
@@ -33,3 +38,8 @@ clint/
 │   └── examples/          # Example scripts
 ```
 
+## Running Model Locally
+1. Install ollama follow these instructions
+2. Start the server by running: `ollama serve`
+3. Pull the LLM model you'll want to test with. Example: `ollama pull llama3.1:8b`
+4. Run the ollama chat example. Instructions can be found under `Ollama Chat Testing`

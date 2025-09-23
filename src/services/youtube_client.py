@@ -15,11 +15,8 @@ class YouTubeClient:
     YouTube client for extracting video transcripts using yt-dlp.
     """
     
-    def __init__(self):
-        """Initialize the YouTube client."""
-        self.transcript_processor = TranscriptProcessor()
-    
-    def get_transcript(self, video_url: str) -> TranscriptResult:
+    @staticmethod
+    def get_transcript(video_url: str) -> TranscriptResult:
         """
         Extract entire transcript from a YouTube video.
 
@@ -29,9 +26,10 @@ class YouTubeClient:
         Returns:
             TranscriptResult: Object containing transcript, duration, and success status
         """
-        return self.transcript_processor.get_transcript(video_url)
+        return TranscriptProcessor().get_transcript(video_url)
 
-    def get_transcript_segments(self, video_url: str, segment_seconds: int = 60) -> list[TranscriptSegment]:
+    @staticmethod
+    def get_transcript_segments(video_url: str, segment_seconds: int = 60) -> list[TranscriptSegment]:
         """
         Extract timed transcript and group it into fixed-size segments.
         
@@ -42,16 +40,18 @@ class YouTubeClient:
         Returns:
             List[TranscriptSegment]: Ordered segments with timed lines.
         """
-        return self.transcript_processor.get_transcript_segments(video_url, segment_seconds)
+        return TranscriptProcessor().get_transcript_segments(video_url, segment_seconds)
 
-    def get_transcript_with_segments(self, video_url: str, segment_seconds: int = 60) -> TranscriptWithSegmentsResult:
+    @staticmethod
+    def get_transcript_with_segments(video_url: str, segment_seconds: int = 60) -> TranscriptWithSegmentsResult:
         """
         Convenience method that returns both the cleaned transcript text and
         time-bucketed segments (default 60s) in a single call.
         """
-        return self.transcript_processor.get_transcript_with_segments(video_url, segment_seconds)
+        return TranscriptProcessor().get_transcript_with_segments(video_url, segment_seconds)
     
-    def get_video_info(self, video_url: str) -> Optional[Dict[str, Any]]:
+    @staticmethod
+    def get_video_info(video_url: str) -> Optional[Dict[str, Any]]:
         """
         Get basic video information.
         

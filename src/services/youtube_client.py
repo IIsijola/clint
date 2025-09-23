@@ -26,7 +26,7 @@ class YouTubeClient:
         Returns:
             TranscriptResult: Object containing transcript, duration, and success status
         """
-        return TranscriptProcessor().get_transcript(video_url)
+        return TranscriptProcessor.get_transcript(video_url)
 
     @staticmethod
     def get_transcript_segments(video_url: str, segment_seconds: int = 60) -> list[TranscriptSegment]:
@@ -40,7 +40,7 @@ class YouTubeClient:
         Returns:
             List[TranscriptSegment]: Ordered segments with timed lines.
         """
-        return TranscriptProcessor().get_transcript_segments(video_url, segment_seconds)
+        return TranscriptProcessor.get_transcript_segments(video_url, segment_seconds)
 
     @staticmethod
     def get_transcript_with_segments(video_url: str, segment_seconds: int = 60) -> TranscriptWithSegmentsResult:
@@ -48,7 +48,7 @@ class YouTubeClient:
         Convenience method that returns both the cleaned transcript text and
         time-bucketed segments (default 60s) in a single call.
         """
-        return TranscriptProcessor().get_transcript_with_segments(video_url, segment_seconds)
+        return TranscriptProcessor.get_transcript_with_segments(video_url, segment_seconds)
     
     @staticmethod
     def get_video_info(video_url: str) -> Optional[Dict[str, Any]]:

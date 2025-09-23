@@ -104,11 +104,11 @@ class TranscriptProcessor:
                     )
                 
                 # Try to find English subtitles
-                transcript_text = self._extract_transcript_text(all_subtitles, ydl)
+                transcript_text = TranscriptProcessor._extract_transcript_text(all_subtitles, ydl)
                 
                 if transcript_text:
                     print(f"[DEBUG] Extracted transcript length: {len(transcript_text)} characters")
-                    cleaned_transcript = self._clean_transcript(transcript_text)
+                    cleaned_transcript = TranscriptProcessor._clean_transcript(transcript_text)
                     elapsed_time = time.time() - start_time
                     print(f"[INFO] Transcript extraction completed in {elapsed_time:.2f} seconds")
                     return TranscriptResult(
@@ -176,7 +176,7 @@ class TranscriptProcessor:
             if not all_subtitles:
                 return []
 
-            lines: List[TranscriptLine] = self._extract_timed_captions(all_subtitles, ydl)
+            lines: List[TranscriptLine] = TranscriptProcessor._extract_timed_captions(all_subtitles, ydl)
             if not lines:
                 return []
 
@@ -211,10 +211,10 @@ class TranscriptProcessor:
         This reuses the existing transcript logic and the timed-segmentation logic
         without duplicating extraction work in callers.
         """
-        transcript_result = self.get_transcript(video_url)
+        transcript_result = TranscriptProcessor.get_transcript(video_url)
         # Even if transcript failed, we still attempt timed segments to provide
         # best-effort structure (may also fail gracefully and return []).
-        segments = self.get_transcript_segments(video_url, segment_seconds=segment_seconds)
+        segments = TranscriptProcessor.get_transcript_segments(video_url, segment_seconds=segment_seconds)
         return TranscriptWithSegmentsResult(
             transcript_result=transcript_result,
             segments=segments,
@@ -250,23 +250,23 @@ class TranscriptProcessor:
                             
                             # Parse the transcript based on format
                             if 'vtt' in sub_format.get('ext', '').lower():
-                                parsed = self._parse_vtt(transcript)
+                                parsed = TranscriptProcessor._parse_vtt(transcript)
                                 if parsed:
                                     print(f"[DEBUG] VTT parsing successful, length: {len(parsed)}")
                                     return parsed
                             elif 'srv' in sub_format.get('ext', '').lower():
-                                parsed = self._parse_srv(transcript)
+                                parsed = TranscriptProcessor._parse_srv(transcript)
                                 if parsed:
                                     print(f"[DEBUG] SRV parsing successful, length: {len(parsed)}")
                                     return parsed
                             elif 'json' in sub_format.get('ext', '').lower():
-                                parsed = self._parse_json3(transcript)
+                                parsed = TranscriptProcessor._parse_json3(transcript)
                                 if parsed:
                                     print(f"[DEBUG] JSON3 parsing successful, length: {len(parsed)}")
                                     return parsed
                             else:
                                 # Try to parse as plain text
-                                parsed = self._parse_plain_text(transcript)
+                                parsed = TranscriptProcessor._parse_plain_text(transcript)
                                 if parsed:
                                     print(f"[DEBUG] Plain text parsing successful, length: {len(parsed)}")
                                     return parsed
@@ -286,15 +286,15 @@ class TranscriptProcessor:
                         
                         # Parse the transcript based on format
                         if 'vtt' in sub_format.get('ext', '').lower():
-                            parsed = self._parse_vtt(transcript)
+                            parsed = TranscriptProcessor._parse_vtt(transcript)
                             if parsed:
                                 return parsed
                         elif 'srv' in sub_format.get('ext', '').lower():
-                            parsed = self._parse_srv(transcript)
+                            parsed = TranscriptProcessor._parse_srv(transcript)
                             if parsed:
                                 return parsed
                         else:
-                            parsed = self._parse_plain_text(transcript)
+                            parsed = TranscriptProcessor._parse_plain_text(transcript)
                             if parsed:
                                 return parsed
                                 
@@ -314,7 +314,7 @@ class TranscriptProcessor:
         def try_langs(langs: List[str]) -> List[TranscriptLine]:
             for lang in langs:
                 if lang in subtitles and subtitles[lang]:
-                    lines = self._parse_timed_from_formats(subtitles[lang], ydl)
+                    lines = TranscriptProcessor._parse_timed_from_formats(subtitles[lang], ydl)
                     if lines:
                         return lines
             return []
@@ -328,7 +328,7 @@ class TranscriptProcessor:
         for lang, formats in subtitles.items():
             if not formats:
                 continue
-            lines = self._parse_timed_from_formats(formats, ydl)
+            lines = TranscriptProcessor._parse_timed_from_formats(formats, ydl)
             if lines:
                 return lines
         return []
@@ -343,11 +343,11 @@ class TranscriptProcessor:
                 ext = sub_format.get('ext', '').lower()
 
                 if 'json' in ext:
-                    lines = self._parse_timed_json3(content)
+                    lines = TranscriptProcessor._parse_timed_json3(content)
                 elif 'vtt' in ext:
-                    lines = self._parse_timed_vtt(content)
+                    lines = TranscriptProcessor._parse_timed_vtt(content)
                 elif 'srv' in ext or 'xml' in ext:
-                    lines = self._parse_timed_srv(content)
+                    lines = TranscriptProcessor._parse_timed_srv(content)
                 else:
                     # Plain text has no timing information
                     lines = []
@@ -494,7 +494,8 @@ class TranscriptProcessor:
         result = ' '.join(transcript_lines)
         return result
     
-    def _parse_srv(self, srv_content: str) -> str:
+    @staticmethod
+    def _parse_srv(srv_content: str) -> str:
         """
         Parse SRV subtitle format.
         
@@ -522,7 +523,8 @@ class TranscriptProcessor:
         
         return srv_content
     
-    def _parse_plain_text(self, text_content: str) -> str:
+    @staticmethod
+    def _parse_plain_text(text_content: str) -> str:
         """
         Parse plain text subtitle format.
         
@@ -546,7 +548,8 @@ class TranscriptProcessor:
         
         return ' '.join(cleaned_lines)
     
-    def _clean_transcript(self, transcript: str) -> str:
+    @staticmethod
+    def _clean_transcript(transcript: str) -> str:
         """
         Clean and format the transcript text.
         

@@ -30,11 +30,20 @@ python3 -m src.examples.ollama_chat_example
 python3 -m src.examples.youtube_segments_example
 ```
 
+### YouTube Video Chunk Scoring
+```bash
+python3 -m src.examples.score_video_chunks_example
+```
+
 ## Project Structure
 ```
 clint/
 ├── src/
-│   ├── services/          # API clients (Twitch, YouTube)
+│   ├── services/          # API clients (Twitch, YouTube, LLM)
+│   │   ├── llm/           # LLM service and prompts
+│   │   ├── transcript_processor.py # Transcript extraction and segmentation
+│   │   ├── twitch_client.py
+│   │   └── youtube_client.py
 │   └── examples/          # Example scripts
 ```
 

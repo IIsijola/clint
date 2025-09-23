@@ -5,14 +5,13 @@ YouTube transcript + 60s segments example
 from ..services.youtube_client import YouTubeClient
 
 def main():
-    client = YouTubeClient()
     video_url = input("Enter YouTube video URL: ").strip()
     if not video_url:
         print("Error: URL cannot be empty!")
         return
 
     print("\nGetting transcript + segments...")
-    combined = client.get_transcript_with_segments(video_url, segment_seconds=60)
+    combined = YouTubeClient.get_transcript_with_segments(video_url, segment_seconds=60)
 
     tr = combined.transcript_result
     if tr.success:

@@ -55,11 +55,8 @@ class TranscriptProcessor:
     Service for processing YouTube transcripts and creating time-based segments.
     """
     
-    def __init__(self):
-        """Initialize the transcript processor."""
-        pass
-    
-    def get_transcript(self, video_url: str) -> TranscriptResult:
+    @staticmethod
+    def get_transcript(video_url: str) -> TranscriptResult:
         """
         Extract entire transcript from a YouTube video.
 
@@ -139,7 +136,8 @@ class TranscriptProcessor:
                 error_message=str(e)
             )
 
-    def get_transcript_segments(self, video_url: str, segment_seconds: int = 60) -> List[TranscriptSegment]:
+    @staticmethod
+    def get_transcript_segments(video_url: str, segment_seconds: int = 60) -> List[TranscriptSegment]:
         """
         Extract timed transcript and group it into fixed-size segments.
 
@@ -204,7 +202,8 @@ class TranscriptProcessor:
 
             return segments
 
-    def get_transcript_with_segments(self, video_url: str, segment_seconds: int = 60) -> TranscriptWithSegmentsResult:
+    @staticmethod
+    def get_transcript_with_segments(video_url: str, segment_seconds: int = 60) -> TranscriptWithSegmentsResult:
         """
         Convenience method that returns both the cleaned transcript text and
         time-bucketed segments (default 60s) in a single call.
@@ -221,7 +220,8 @@ class TranscriptProcessor:
             segments=segments,
         )
 
-    def _extract_transcript_text(self, subtitles: Dict[str, Any], ydl) -> Optional[str]:
+    @staticmethod
+    def _extract_transcript_text(subtitles: Dict[str, Any], ydl) -> Optional[str]:
         """
         Extract transcript text from subtitle data.
         
@@ -304,7 +304,8 @@ class TranscriptProcessor:
         
         return None
 
-    def _extract_timed_captions(self, subtitles: Dict[str, Any], ydl) -> List[TranscriptLine]:
+    @staticmethod
+    def _extract_timed_captions(subtitles: Dict[str, Any], ydl) -> List[TranscriptLine]:
         """
         Extract caption lines with timing information from available subtitle formats.
 
@@ -332,7 +333,8 @@ class TranscriptProcessor:
                 return lines
         return []
 
-    def _parse_timed_from_formats(self, formats: List[Dict[str, Any]], ydl) -> List[TranscriptLine]:
+    @staticmethod
+    def _parse_timed_from_formats(formats: List[Dict[str, Any]], ydl) -> List[TranscriptLine]:
         lines: List[TranscriptLine] = []
         for sub_format in formats:
             try:
@@ -356,7 +358,8 @@ class TranscriptProcessor:
                 continue
         return []
 
-    def _parse_timed_json3(self, json_content: str) -> List[TranscriptLine]:
+    @staticmethod
+    def _parse_timed_json3(json_content: str) -> List[TranscriptLine]:
         import json
         results: List[TranscriptLine] = []
         try:
@@ -382,7 +385,8 @@ class TranscriptProcessor:
             return results
         return results
 
-    def _parse_timed_vtt(self, vtt_content: str) -> List[TranscriptLine]:
+    @staticmethod
+    def _parse_timed_vtt(vtt_content: str) -> List[TranscriptLine]:
         results: List[TranscriptLine] = []
         # Blocks like: 00:00:01.000 --> 00:00:03.000
         # followed by one or more text lines until a blank line
@@ -410,7 +414,8 @@ class TranscriptProcessor:
                 i += 1
         return results
 
-    def _parse_timed_srv(self, srv_content: str) -> List[TranscriptLine]:
+    @staticmethod
+    def _parse_timed_srv(srv_content: str) -> List[TranscriptLine]:
         # Typical <text start="12.34" dur="3.21">Hello</text>
         results: List[TranscriptLine] = []
         pattern = re.compile(r"<text[^>]*start=\"([0-9]+(?:\.[0-9]+)?)\"[^>]*dur=\"([0-9]+(?:\.[0-9]+)?)\"[^>]*>(.*?)</text>", re.DOTALL)
@@ -428,7 +433,8 @@ class TranscriptProcessor:
                 continue
         return results
 
-    def _parse_json3(self, json_content: str) -> str:
+    @staticmethod
+    def _parse_json3(json_content: str) -> str:
         """
         Parse JSON3 subtitle format (YouTube's internal format).
         
@@ -459,7 +465,8 @@ class TranscriptProcessor:
             print(f"[DEBUG] JSON3 parsing failed: {e}")
             return ""
     
-    def _parse_vtt(self, vtt_content: str) -> str:
+    @staticmethod
+    def _parse_vtt(vtt_content: str) -> str:
         """
         Parse VTT (WebVTT) subtitle format.
         

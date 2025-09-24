@@ -8,8 +8,6 @@ from ..services.llm.client import LLMClient, TranscriptScore
 
 
 def main():
-    youtube_client = YouTubeClient()
-
     # Get video URL from user
     video_url = input("Enter YouTube video URL: ").strip()
     if not video_url:
@@ -21,7 +19,7 @@ def main():
 
     # Get video info first
     print("📊 Getting video information...")
-    video_info = youtube_client.get_video_info(video_url)
+    video_info = YouTubeClient.get_video_info(video_url)
     if video_info:
         print(f"Title: {video_info['title']}")
         print(f"Duration: {video_info['duration']} seconds")
@@ -31,7 +29,7 @@ def main():
 
     # Get transcript with 60-second segments
     print(f"\n📝 Extracting transcript with 60-second segments...")
-    result = youtube_client.get_transcript_with_segments(video_url, segment_seconds=60)
+    result = YouTubeClient.get_transcript_with_segments(video_url, segment_seconds=60)
 
     if not result.transcript_result.success:
         print(f"❌ Failed to get transcript: {result.transcript_result.error_message}")

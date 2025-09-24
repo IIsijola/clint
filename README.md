@@ -35,6 +35,11 @@ python3 -m src.examples.youtube_segments_example
 python3 -m src.examples.score_video_chunks_example
 ```
 
+### Download Top YouTube Clips (Scored & Downloaded)
+```bash
+python3 -m src.examples.download_top_clips_example
+```
+
 ## Project Structure
 ```
 clint/
@@ -52,3 +57,7 @@ clint/
 2. Start the server by running: `ollama serve`
 3. Pull the LLM model you'll want to test with. Example: `ollama pull llama3.1:8b`
 4. Run the ollama chat example. Instructions can be found under `Ollama Chat Testing`
+
+
+## Troubleshooting
+If you get the following error: "Requested format is not available. Use --list-formats for a list of available formats" try updating the `yt-dlp` package by running: `python -m pip install -U yt-dlp`
